@@ -1,0 +1,53 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box justify-content-between d-flex align-items-lg-center flex-lg-row flex-column">     
+                <h4 class="page-title">Add User</h4>
+                <div class="d-flex mb-xxl-0 mb-2">
+                    <a href="/users" type="button" class="btn btn-primary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <form id="add-user-form" action="#" onsubmit="Users.user.saveUser(this); return false;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="first_name" type="text" name="first_name" placeholder="First Name *" required />
+                                <label for="first_name">First Name</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="last_name" type="text" name="last_name" placeholder="Last Name *" required />
+                                <label for="last_name">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="user_type" name="type" aria-label="Floating label select example1" required>
+                                    <option value="Editor">Editor</option>
+                                    <option value="Writer">Writer</option>
+                                </select>
+                                <label for="user_type">User Type</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="user_status" name="status" aria-label="Floating label select example2" required>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                                <label for="user_status">Status</label>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end card-body-->
+                <div class="mb-3 mb-0 text-center">
+                    <button class="btn btn-primary" type="submit"> Add </button>
+                </div>
+            </form>
+        </div> <!-- end card-->
+    </div>
+</div>

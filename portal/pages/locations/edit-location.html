@@ -1,0 +1,47 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box justify-content-between d-flex align-items-lg-center flex-lg-row flex-column">     
+                <h4 class="page-title">Edit Location</h4>
+                <div class="d-flex mb-xxl-0 mb-2">
+                    <a href="/locations" type="button" class="btn btn-primary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <form id="add-user-form" action="#" onsubmit="Locations.location.saveLocation(this); return false;">
+                <div class="card-body" style="gap: 20px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="" class="form-label">Location Information</label>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <input class="form-control" type="text" name="location_name" placeholder="Location Name *" required />
+                            <input class="form-control" type="email" name="location_email" placeholder="Location Email *" required>
+                            <input class="form-control" type="text" name="location_contact" placeholder="Location Contact *" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="" class="form-label">Address</label>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <input class="form-control" type="text" name="street_brgy" placeholder="Street / Barangay" />
+                            <input class="form-control" type="text" name="city" placeholder="City">
+                            <input class="form-control" type="text" name="province" placeholder="Province">
+                        </div>
+                    </div>
+
+                </div> <!-- end card-body-->
+                <div class="mb-3 mb-0 text-center">
+                    <button class="btn btn-primary" type="submit"> Save </button>
+                </div>
+            </form>
+        </div> <!-- end card-->
+    </div>
+</div>

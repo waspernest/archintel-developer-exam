@@ -1,0 +1,70 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box justify-content-between d-flex align-items-lg-center flex-lg-row flex-column">     
+                <h4 class="page-title">Add Stafff</h4>
+                <div class="d-flex mb-xxl-0 mb-2">
+                    <a href="/staffs" type="button" class="btn btn-primary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <form id="add-user-form" action="#" onsubmit="Staffs.staff.saveStaff(this); return false;">
+                <div class="card-body" style="gap: 20px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="mb-3">
+                            <label for="" class="form-label">General Information</label>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <input class="form-control" type="text" name="first_name" placeholder="First Name *" required />
+                            <input class="form-control" type="text" name="middle_name" placeholder="Middle Name (Optional)">
+                            <input class="form-control" type="text" name="last_name" placeholder="Last Name *" required>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <input class="form-control" type="email" name="email" placeholder="Email Address *" required />
+                            <input class="form-control" type="text" name="contact" placeholder="Contact No. *" required />
+                        </div>
+
+                        <hr />
+
+                        <div class="mb-3">
+                            <label for="" class="form-label">Address</label>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <input class="form-control" type="text" name="street_brgy" placeholder="Street / Barangay" />
+                            <input class="form-control" type="text" name="city" placeholder="City">
+                            <input class="form-control" type="text" name="province" placeholder="Province">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <hr />
+                        <div class="mb-3">
+                            <label for="" class="form-label">Location Information</label>
+                        </div>
+
+                        <div class="d-flex mb-3" style="gap: 20px;">
+                            <label>Location: </label>
+                            <select class="form-select select_location" name="location"></select>
+                            <label>Position: </label>
+                            <select class="form-select select_position" name="user_level">
+                                <option value="4">Manager</option>
+                                <option value="1">Staff</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> <!-- end card-body-->
+                <div class="mb-3 mb-0 text-center">
+                    <button class="btn btn-primary" type="submit"> Add </button>
+                </div>
+            </form>
+        </div> <!-- end card-->
+    </div>
+</div>

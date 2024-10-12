@@ -1,0 +1,7 @@
+/** CUSTOM CSS **/
+table.table tbody img {
+  width: 100px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
