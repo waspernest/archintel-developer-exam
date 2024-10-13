@@ -75,6 +75,11 @@ export const Router = {
 				'/company' : `company`,
 				'/add-company' : `company`,
 				'/edit-company' : `company`,
+
+				//media
+				'/all-media' : `media`,
+				'/add-article' : `media`,
+				'/edit-article' : `media`,
 			}
 
 			return parentPage[pathname]
@@ -113,6 +118,11 @@ export const Router = {
 				'/company': 'pages/company/company.html',
 				'/add-company': 'pages/company/add-company.html',
 				'/edit-company': 'pages/company/edit-company.html',
+
+				//media
+				'/all-media': 'pages/media/all-media.html',
+				'/add-article': 'pages/media/add-article.html',
+				'/edit-article': 'pages/media/edit-article.html',
 			}
 
 			return routes[pathname] || routes[404];

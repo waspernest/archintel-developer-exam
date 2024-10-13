@@ -4,6 +4,8 @@ const isLoggedIn = localStorage.getItem('isLoggedIn') === "true";
 let user_data = '';
 
 export const Project = {
+
+	user_data: user_data, // Expose user_data as part of Project
 	
 	main: {
         onLoad: async () => {
@@ -76,56 +78,62 @@ export const Project = {
 
 		setUserDetails: () => {
 
-			if (isLoggedIn) {
-				const userData = JSON.parse(localStorage.getItem('user_data'));
-				
-				user_data = userData[0];
+			return new Promise((resolve, reject) => {
+		        if (isLoggedIn) {
+		            const userData = JSON.parse(localStorage.getItem('user_data'));
+		            
+		            Project.user_data = userData[0]; // Now it's part of the Project object
 
-				$('.user-name').html(user_data['first_name']+" "+user_data['last_name']);
-				$('.user-type').html(user_data['type']);
-			}
+		            $('.user-name').html(Project.user_data['first_name'] + " " + Project.user_data['last_name']);
+		            $('.user-type').html(Project.user_data['type']);
+
+		            resolve(Project.user_data);
+		        } else {
+		            reject("User is not logged in or no user data available.");
+		        }
+		    });
 
 		},
 
         setSideBar: () => {
 
-        	$('.side-nav').html('');
-        	let sidebar_li = '';
+		    $('.side-nav').html(''); // Clear sidebar
+		    let sidebar_li = '';
 
-        	const userAcl = JSON.parse(localStorage.getItem('user_acl'));
+		    const userAcl = JSON.parse(localStorage.getItem('user_acl'));
+		    
+		    // Check if userAcl exists and is not null or undefined
+		    if (userAcl && userAcl[Project.user_data['type']] && userAcl[Project.user_data['type']].menu) {
 
-        	console.log(userAcl);
-        	
-        	if (typeof userAcl !== "undefined") {
+		        const menus = userAcl[Project.user_data['type']].menu;
 
-	        	const menuItems = Object.keys(userAcl);
-	        	const menus = userAcl[user_data['type']].menu;
+		        // Loop through the menus and generate the sidebar items
+		        Object.keys(menus).forEach(key => {
 
-	        	Object.keys(menus).forEach(key => {
+		            sidebar_li += `<li class="side-nav-item"> \
+		                                <a href="${menus[key].url}" class="side-nav-link"> \
+		                                    <i class="material-symbols-outlined">${menus[key].material_icon}</i> \
+		                                    <span> ${menus[key].title} </span> \
+		                                </a> \
+		                            </li>`;
+		        });
+		    } else {
+		        console.error("user_acl is not available or doesn't match the user type.");
+		        // You can handle what to show if there's no userAcl or menu (e.g., redirect to login)
+		        //Router.page.handlePage("/");
+		    }
 
-		    		sidebar_li += `<li class="side-nav-item"> \
-			                            <a href="${menus[key].url}" class="side-nav-link"> \
-			                                <i class="material-symbols-outlined">${menus[key].material_icon}</i> \
-			                                <span> ${menus[key].title} </span> \
-			                            </a> \
-			                        </li>`;
+		    // Add static logout menu
+		    sidebar_li += `<li class="side-nav-item"> \
+		                        <a href="/logout" class="side-nav-link"> \
+		                            <i class="material-symbols-outlined">logout</i> \
+		                            <span> Logout </span> \
+		                        </a> \
+		                    </li>`;
 
-				});
-        	}
-        	
-        	//add static logout menu
-        	sidebar_li += `<li class="side-nav-item"> \
-	                            <a href="/logout" class="side-nav-link"> \
-	                               	<i class="material-symbols-outlined">logout</i> \
-	                                <span> Logout </span> \
-	                            </a> \
-	                        </li>`;
-
-        	$('.side-nav').html(sidebar_li);
-
-
-
-        },
+		    // Set the sidebar content
+		    $('.side-nav').html(sidebar_li);
+		},
 
         globalAlertMessage: (type, message, wrapper) => {
 

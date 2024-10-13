@@ -60,6 +60,35 @@ export const Company = {
 				console.log("Error: ", error);
 			}
 
+		},
+
+		removeCompany: async (e) => {
+
+			Project.main.confirmAlertModal('info', 'confirm', 'Remove Company', 'Are you sure you want to remove this company?').then(async (confirmed) => {
+
+				if (confirmed) {
+
+					let parameter = {
+						model: 'company',
+						method: 'delete',
+						condition: { id: $(e).data('id') }
+					}
+
+					try {
+						let response = await Project.main.startRequest(parameter);
+
+						if (response['code'] == 200) {
+							$('.company_table tbody tr.company-row-'+$(e).data('id')).remove();
+						}
+
+					} catch (error) {
+						console.log("Error: ", error);
+					}
+
+				}
+
+			});
+
 		}
 
 	}

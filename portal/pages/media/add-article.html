@@ -1,0 +1,52 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box justify-content-between d-flex align-items-lg-center flex-lg-row flex-column">     
+                <h4 class="page-title">Add Article</h4>
+                <div class="d-flex mb-xxl-0 mb-2">
+                    <a href="/all-media" type="button" class="btn btn-primary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <form id="add-user-form" action="#" onsubmit="Media.media.saveArticle(this); return false;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 mb-3"></div>
+                        <div class="col-lg-8 mb-3">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="image" type="text" name="image" placeholder="Image *" required />
+                                <label for="image">Image (please include http or https in image url)</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="title" type="text" name="title" placeholder="Title *" required />
+                                <label for="title">Title *</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="link" type="text" name="link" placeholder="Link *" required />
+                                <label for="link">Link (please include http or https in url)</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date</label>
+                                <input type="text" id="article_date" name="article_date" class="form-control flatpickr-input active" placeholder="Date" readonly="readonly">
+                            </div>
+                            <div class="mb-3">
+                                <h4 class="header-title mt-2">Content</h4>
+
+                                <div id="snow-editor" style="height: 300px;"></div><!-- end Snow-editor-->
+                            </div>
+                        </div>
+                        <div class="col-lg-2 mb-3"></div>
+                    </div>
+                </div> <!-- end card-body-->
+                <div class="mb-3 mb-0 text-center">
+                    <button class="btn btn-primary" type="submit"> Add </button>
+                </div>
+            </form>
+        </div> <!-- end card-->
+    </div>
+</div>
