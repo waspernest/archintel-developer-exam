@@ -65,6 +65,9 @@ export const Router = {
 		getSubPagesParents : (pathname) => {
 
 			let parentPage = {
+				//dashboard
+				'/dashboard' : `dashboard`,
+
 
 				//users
 				'/users' : `users`,
@@ -104,10 +107,13 @@ export const Router = {
 
 		routes: (pathname) => {
 
+			const userAcl = JSON.parse(localStorage.getItem('user_acl'));
+			const userType = Project.user_data ? Project.user_data['type'] : null;
+
 			let routes = {
 				404: `pages/common/404.html`,
 				'/': 'pages/common/login.html',
-				'/dashboard': 'pages/dashboard/dashboard.html',
+				'/dashboard': (userType == "Writer") ? 'pages/dashboard/dashboard-writer.html' : 'pages/dashboard/dashboard.html',
 
 				//users
 				'/users': 'pages/users/users.html',
@@ -125,7 +131,40 @@ export const Router = {
 				'/edit-article': 'pages/media/edit-article.html',
 			}
 
-			return routes[pathname] || routes[404];
+			let forbiddenRoute = 'pages/common/403.html';
+
+			// If userType is null or userAcl is missing, redirect to login page
+		    if (!userType || !userAcl) {
+		        return routes['/']; // Return login page route
+		    }
+
+		    // Force convert pathname to a string
+    		pathname = String(pathname).trim();
+
+			if (userAcl && userAcl[userType]) {
+		        const aclData = userAcl[userType];
+		        
+		        // Get allowed routes from both the menu and the access array
+		        const allowedMenuRoutes = Object.keys(aclData.menu).map(key => aclData.menu[key].url);
+		        const allowedAccessRoutes = aclData.access ? aclData.access.map(route => `/${route}`) : []; // Convert access array to URLs
+		        
+		        // Combine both allowed routes
+		        const allowedRoutes = [...allowedMenuRoutes, ...allowedAccessRoutes];
+
+		        // Check restrictions first
+		        if (aclData.restrictions && aclData.restrictions.includes(pathname.replace(/^\/+/, ''))) {
+		            return forbiddenRoute;
+		        }
+
+		        // Check if the route is allowed
+		        if (allowedRoutes.includes(pathname)) {
+		            return routes[pathname] || routes[404];
+		        } else {
+		            return forbiddenRoute;
+		        }
+		    }
+
+	    	return route[404]; // Fallback to 404 if no matching route is found or userAcl is invalid
 
 		},
 
@@ -147,7 +186,7 @@ export const Router = {
 		    }
 
 		    // Render the content
-		    if (route === 'pages/common/404.html') { // If route is 404, display 404 page
+		    if (route === 'pages/common/404.html' || route === 'pages/common/403.html') { // If route is 404, display 404 page
 		        $('.body-wrapper .wrapper').html(content);
 
 		    } else {

@@ -5,3 +5,10 @@ table.table tbody img {
   display: block;
   margin: 0 auto;
 }
+
+.inbox-widget .inbox-item .inbox-item-img img {
+  width: 100px !important;
+}
+.inbox-widget .inbox-item .inbox-item-img {
+  width: 80px !important;
+}
