@@ -1,7 +1,7 @@
 # archintel-developer-exam
 ArchIntel Backend Developer Skill Assessment
 
-# Default users. We will use the First name and last name to login in the app as we don't have password field in the database:
+Default users. We will use the First name and last name to login in the app as we don't have password field in the database:
 Editor Account: Ernest Espinosa
 Writer: John Smith
 
