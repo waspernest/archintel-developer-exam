@@ -32,9 +32,10 @@ export const Router = {
 			    // Check if the link is a collapse toggle or anchor link
 			    const isCollapseToggle = $link.attr('data-toggle') === 'collapse' || $link.attr('aria-expanded') !== undefined;
 			    const isAnchorLink = href && href.indexOf('#') === 0; // Check if it's an anchor link
+			    const isNewTab = $link.attr('target') === '_blank'; // Check if the link should open in a new tab
 
 			    // Prevent the default link behavior only for regular navigation links
-			    if (!isCollapseToggle && !isAnchorLink) {
+			    if (!isCollapseToggle && !isAnchorLink && !isNewTab) {
 			        e.preventDefault();
 
 			        // Handle the page change only if the route exists (not a 404)
@@ -83,6 +84,7 @@ export const Router = {
 				'/all-media' : `media`,
 				'/add-article' : `media`,
 				'/edit-article' : `media`,
+				'/view-article' : `media`,
 			}
 
 			return parentPage[pathname]
@@ -129,6 +131,7 @@ export const Router = {
 				'/all-media': 'pages/media/all-media.html',
 				'/add-article': 'pages/media/add-article.html',
 				'/edit-article': 'pages/media/edit-article.html',
+				'/view-article': 'pages/media/view-article.html',
 			}
 
 			let forbiddenRoute = 'pages/common/403.html';
@@ -186,20 +189,47 @@ export const Router = {
 		    }
 
 		    // Render the content
-		    if (route === 'pages/common/404.html' || route === 'pages/common/403.html') { // If route is 404, display 404 page
+		    if (route === 'pages/common/404.html' || route === 'pages/common/403.html') { 
 		        $('.body-wrapper .wrapper').html(content);
 
 		    } else {
+
+		    	// Load the correct JavaScript file for the dynamic page
+		        let parentPage = Router.main.getSubPagesParents(pathname);
+
 		        switch (pathname) {
 		            case '/': // Default page - login and the function in here is found in script.js
 		                $('.body-wrapper .wrapper').html(content);
 		                break;
 
+		            case '/view-article':
+		            	$('.body-wrapper .wrapper').html(content);
+
+		            	
+
+		                try {
+						    // Dynamically import the module based on the parentPage and pathname
+						    const module = await import(`/site/assets/js/page_scripts/${parentPage}/${pathname.replace("/", "")}.js`);
+						    
+						    // Dynamically determine which object to access (e.g., Users, Staff) based on parentPage
+						    const objectName = parentPage.charAt(0).toUpperCase() + parentPage.slice(1); // Capitalize the first letter (e.g., 'users' becomes 'Users')
+
+						    // Check if the module has the object you're looking for and call its onLoad function dynamically
+						    if (module[objectName] && module[objectName].main && typeof module[objectName].main.onLoad === 'function') {
+						        module[objectName].main.onLoad(); // Call the dynamic onLoad function
+						    } else {
+						        console.log(`Error: Could not find ${objectName}.main.onLoad() in the module`);
+						    }
+						} catch (error) {
+						    console.log("Error loading module:", error);
+						}
+
+		                await Router.page.loadPageScript("site/assets/js/page_scripts/" + parentPage + "/" + pathname.replace("/", "") + ".js");
+
+		            	break;
+
 		            default: // For dynamic pages
 		                $('.body-wrapper .wrapper .content-page .content').html(content);
-
-		                // Load the correct JavaScript file for the dynamic page
-		                let parentPage = Router.main.getSubPagesParents(pathname);
 
 		                try {
 						    // Dynamically import the module based on the parentPage and pathname

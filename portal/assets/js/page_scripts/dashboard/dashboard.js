@@ -23,30 +23,46 @@ export const Dashboard = {
 
 		loadWriterDashboard: async () => {
 
-			const articles = await Dashboard.dashboard.getWriterArticles(Project.user_data.id);
-			console.log(articles);
+			let parameter = {
+				model: 'assoc',
+				method: 'custom_join_query',
+				table: 'get_article_details_with_user_details',
+				id: Project.user_data.id
+			}
+
+			console.log(parameter);
 
 			let result = '';
 
-			if (articles['code'] == 200 && articles['data'] && articles['data'].length > 0) {
+			try {
+				let response = await Project.main.startRequest(parameter);
 
-				for (const item of articles['data']) {
+				if (response['code'] == 200 && response['data'] && response['data'].length > 0) {
 
-					result = `<div class="inbox-item"> \
-		                            <div class="inbox-item-img"><img src="${item.image}" class="rounded-circle" alt=""></div> \
-		                            <p class="inbox-item-author"><a href="/view-article?link=${item.link}" target="_blank">${item.title}</a></p> \
-		                            <p class="inbox-item-text">${moment(item.date).format("MMMM D, YYYY")}</p> \
-		                            <p class="inbox-item-text">${item.first_name} ${item.last_name}</p> \
-		                            <!--p class="inbox-item-date"> \
-		                                <a href="#" class="btn btn-sm btn-link text-info fs-13"> Reply </a> \
-		                            </p--> \
-		                        </div>`;
+					for (const item of response['data']) {
 
-		            if (item.status == 0) {
-		            	$('.for-edit-wrapper').append(result);
-		            }
+						result = `<div class="inbox-item"> \
+			                            <div class="inbox-item-img"><img src="${item.image}" class="rounded-circle" alt=""></div> \
+			                            <p class="inbox-item-author"><a href="/view-article?link=${item.link}" target="_blank">${item.title}</a></p> \
+			                            <p class="inbox-item-text">${moment(item.date).format("MMMM D, YYYY")}</p> \
+			                            <p class="inbox-item-text">Writer: ${item.first_name} ${item.last_name}</p> \
+			                            <p class="inbox-item-text">Editor: </p> \
+			                            <p class="inbox-item-date"> \
+			                                <a href="#" class="badge bg-info-subtle text-info fs-16"> ${(item.status == 1) ? "Published" : "For Edit"} </a> \
+			                            </p> \
+			                        </div>`;
+
+			            if (item.status == 0) {
+			            	$('.for-edit-wrapper').append(result);
+			            } else {
+			            	$('.published-wrapper').append(result);
+			            }
+					}
+
 				}
 
+			} catch (error) {
+				console.log("Error: ", error);
 			}
 
 		},
@@ -61,11 +77,55 @@ export const Dashboard = {
 			}
 
 			try {
-				let response = Project.main.startRequest(parameter);
+				let response = await Project.main.startRequest(parameter);
 				return response;
 			} catch (error) {
 				console.log("Error: ", error);
 			}
+		},
+
+		loadEditorDashboard: async () => {
+
+			let parameter = {
+				model: 'article',
+				method: 'retrieve',
+				retrieve: '*'
+			}
+
+
+			let result = '';
+
+			try {
+				let response = await Project.main.startRequest(parameter);
+				
+				if (response['code'] == 200 && response['data'] && response['data'].length > 0) {
+
+					for (const item of response['data']) {
+
+						result = `<div class="inbox-item"> \
+			                            <div class="inbox-item-img"><img src="${item.image}" class="rounded-circle" alt=""></div> \
+			                            <p class="inbox-item-author"><a href="/view-article?link=${item.link}" target="_blank">${item.title}</a></p> \
+			                            <p class="inbox-item-text">${moment(item.date).format("MMMM D, YYYY")}</p> \
+			                            <p class="inbox-item-text">Writer: ${item.first_name} ${item.last_name}</p> \
+			                            <p class="inbox-item-text">Editor: </p> \
+			                            <p class="inbox-item-date"> \
+			                                <a href="#" class="badge bg-info-subtle text-info fs-16"> ${(item.status == 1) ? "Published" : "For Edit"} </a> \
+			                            </p> \
+			                        </div>`;
+
+			            if (item.status == 0) {
+			            	$('.for-edit-wrapper').append(result);
+			            } else {
+			            	$('.published-wrapper').append(result);
+			            }
+					}
+
+				}
+
+			} catch (error) {
+				console.log("Error: ", error);
+			}
+
 		}
 
 	}

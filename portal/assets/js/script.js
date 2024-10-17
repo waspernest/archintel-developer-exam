@@ -205,8 +205,10 @@ export const Project = {
         		if ($('#staticBackdrop .modal-body .spinner-border').length > 0) $('#staticBackdrop .modal-body .spinner-border').remove();
         		
         		if (task == "succesful") {
-        			$('#staticBackdrop .modal-body p.modal-icon').html('<i class="ri-check-line h1" style="color: #17a497;"></i></i>');
-        		} else {
+        			$('#staticBackdrop .modal-body p.modal-icon').html('<i class="ri-check-line h1" style="color: #17a497;"></i>');
+        		} else if (task == "warning") {
+        			$('#staticBackdrop .modal-body p.modal-icon').html('<i class="ri-alert-line h1" style="color: #fec20d;"></i>');
+				} else {
         			$('#staticBackdrop .modal-body p.modal-icon').html('<i class="ri-close-circle-line h1" style="color: #f7473a;"></i>');
         		}
 
@@ -268,7 +270,55 @@ export const Project = {
 
         closeModal: async (modalID) => {
 			$('#'+modalID).modal('hide');
-		}
+		},
+
+		splitStringParts: (base64String, chunkSize) => {
+            let parts = [];
+            for (let i = 0; i < base64String.length; i += chunkSize) {
+                parts.push(base64String.substring(i, i + chunkSize));
+            }
+            return parts;
+        },
+
+        uploadBase64Part: async (table, id, part, column) => {
+            let parameter = {
+                model: 'main',
+                method: 'upload_parts_sequentially',
+                table: table,
+                column: column,
+                parts: part,
+                condition: {
+                	id: id
+                }
+            }
+
+            try {
+                let response = await Project.main.startRequest(parameter);
+                if (response['code'] == 200) return true;
+            } catch (error) {
+                console.log("Error: ", error);
+            }
+
+            return false;
+
+        },
+
+        uploadImageSequentially: (table, id, parts, part, column) => {
+		    return new Promise(async (resolve, reject) => {
+		        for (let n = part; n < parts.length; n++) {
+		            try {
+		                let response = await Project.main.uploadBase64Part(table, id, parts[n], column);
+		                if (response) {
+		                    console.log(`Part ${n + 1} of ${parts.length} is uploaded`); // +1 for better readability
+		                }
+		            } catch (error) {
+		                console.log("Error: ", error);
+		                return reject(error); // Reject the promise if an error occurs
+		            }
+		        }
+		        resolve(true); // Resolve the promise when all parts are uploaded
+		    });
+		},
     },
 
     index: {

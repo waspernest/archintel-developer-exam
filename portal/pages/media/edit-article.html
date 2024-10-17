@@ -28,12 +28,19 @@
                             </div>
                             <div class="form-floating mb-3">
                                 <input class="form-control" id="link" type="text" name="link" placeholder="Link *" required />
-                                <label for="link">Link (please include http or https in url)</label>
+                                <label for="link">Slug link (will be used to view the article)</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="company" name="company" aria-label="Floating label select example1" required>
+                                    <option value="0">-</option>
+                                </select>
+                                <label for="company">Company</label>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Date</label>
                                 <input type="text" id="article_date" name="article_date" class="form-control flatpickr-input active" placeholder="Date" readonly="readonly">
                             </div>
+
                             <div class="mb-3">
                                 <h4 class="header-title mt-2">Content</h4>
 
@@ -43,8 +50,8 @@
                         <div class="col-lg-2 mb-3"></div>
                     </div>
                 </div> <!-- end card-body-->
-                <div class="mb-3 mb-0 text-center">
-                    <button class="btn btn-primary" type="submit"> Save </button>
+                <div class="mb-3 mb-0 text-center edit-article-btns">
+                    <button class="btn btn-primary article-save-btn" type="submit"> Save </button>
                 </div>
             </form>
         </div> <!-- end card-->

@@ -12,3 +12,9 @@ table.table tbody img {
 .inbox-widget .inbox-item .inbox-item-img {
   width: 80px !important;
 }
+.edit-article-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+}

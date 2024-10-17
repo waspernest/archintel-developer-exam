@@ -32,15 +32,19 @@ export const Media = {
 
 			Project.main.globalModal('warning', 'submission', 'Add Article', 'Adding article... Please wait...');
 
+			//proccess the quill js editor
+			let contentChunks = Project.main.splitStringParts(quill.root.innerHTML, 5000);
+			let quillContent = contentChunks[0];
+
 			let parameter = {
 				model: 'article',
 				method: 'insert',
 				insert: {
 					image: form.find('input[name=image]').val(),
 					title: form.find('input[name=title]').val(),
-					link: Media.media.createURLSlugLink(form.find('input[name=link]').val()),
+					link: await Media.media.createURLSlugLink(form.find('input[name=link]').val()),
 					date: form.find('input[name=article_date]').val(),
-					content: quill.root.innerHTML,
+					content: quillContent,
 					status: 0, //always set to 0 so it will be set to "For Edit",
 					writer: Project.user_data['id']
 				}
@@ -48,10 +52,24 @@ export const Media = {
 
 			try {
 				let response = await Project.main.startRequest(parameter);
-				console.log(response);
 
 				if (response['code'] == 200 && response['id'] > 0) {
-					Project.main.globalModal('success', 'succesful', 'Add Article', 'Article has been added.');
+
+					if (contentChunks.length > 1) {
+						Project.main.uploadImageSequentially('article', response['id'], contentChunks, 1, 'content')
+						.then(() => {
+
+							Project.main.globalModal('success', 'succesful', 'Add Article', 'Article has been added.');
+
+
+						})
+						.catch((error) => {
+							console.error("Error during upload: ", error);
+						});
+					} else {
+						Project.main.globalModal('success', 'succesful', 'Add Article', 'Article has been added.');
+					}
+
 				}
 
 			} catch (error) {
@@ -60,12 +78,48 @@ export const Media = {
 
 		},
 
-		createURLSlugLink: (text) => {
-			return text
-					.toLowerCase() // Convert to lowercase
-            		.replace(/[^a-z0-9\s-]/g, '') // Remove invalid characters
-            		.replace(/\s+/g, '-') // Replace spaces with hyphens
-           			.replace(/-+/g, '-'); // Merge multiple hyphens
+		createURLSlugLink: async (text) => {
+
+			// Convert text to a slug format
+		    let slug = text
+		            .toLowerCase() // Convert to lowercase
+		            .replace(/[^a-z0-9\s-]/g, '') // Remove invalid characters
+		            .replace(/\s+/g, '-') // Replace spaces with hyphens
+		            .replace(/-+/g, '-'); // Merge multiple hyphens
+		    
+		    // Simulate a function to check for duplicates in the database
+		    const isDuplicate = async (slug) => {
+		        // Make a call to the backend to check if the slug exists in the database
+		        let parameter = {
+		        	model: 'article',
+		        	method: 'retrieve',
+		        	retrieve: '*',
+		        	condition: {
+		        		link: slug
+		        	}
+		        }
+
+		        try {
+		        	let response = await Project.main.startRequest(parameter);
+		        	
+		        	if (response['code'] == 200 && response['data'] && response['data'].length > 0) return true;
+
+		        } catch (error) {
+		        	console.log("Error: ", error);
+		        }
+		    };
+		    
+		    let attempt = 1;
+		    let finalSlug = slug;
+
+		    // Check if slug is a duplicate, append a number if needed
+		    while (await isDuplicate(finalSlug)) {
+		        attempt++;
+		        finalSlug = `${slug}-${attempt}`;
+		    }
+
+		    return finalSlug;
+			
 		}
 
 	}
